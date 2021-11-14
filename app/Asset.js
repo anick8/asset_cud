@@ -1,21 +1,21 @@
 var pgsql = require('../lib/pgsql')
-
+var hash = require('../lib/hash')
 exports.createAsset = async (req) => {
 
-        var AssetUUID = req.body.AssetUUID;
         var IdentityUUID = req.body.IdentityUUID;
         var AssetName = req.body.AssetName || "";
         var CoverContentUUID = req.body.CoverContentUUID;
         var CreatedAt = Date.now();
         var ModifiedAt = Date.now();
+        var AssetUUID = hash.hashing(AssetName,CreatedAt);
         var Description = req.body.Description|| "";
         var ReservePrice = req.body.ReservePrice|| 0;
         // var Content = req.body.Content;
         // var Identity = req.body.Identity;
 
-        var qarg=[AssetUUID,IdentityUUID,AssetName,CoverContentUUID,CreatedAt,Description,ModifiedAt,ReservePrice,Content,Identity];
+        var qarg=[AssetUUID,IdentityUUID,AssetName,CoverContentUUID,CreatedAt,Description,ModifiedAt,ReservePrice];
         
-        qname='Insert into "Asset" ("AssetUUID","IdentityUUID","AssetName","CoverContentUUID","CreatedAt","Description","ModifiedAt","ReservePrice","Content","Identity") values($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)' 
+        qname='Insert into "Asset" ("AssetUUID","IdentityUUID","AssetName","CoverContentUUID","CreatedAt","Description","ModifiedAt","ReservePrice") values($1,$2,$3,$4,$5,$6,$7,$8)' 
         try{
             result =await pgsql.conquery(qname,qarg)
             console.log(result.rowCount)
@@ -37,10 +37,9 @@ exports.updateAsset = async (req) => {
     var ModifiedAt = Date.now();
     var Description = req.body.Description;
     var ReservePrice = req.body.ReservePrice;
-    var Content = req.body.Content;
-    var Identity = req.body.Identity;
-    var qarg=[AssetUUID,AssetName,CoverContentUUID,Description,ModifiedAt,ReservePrice,Content,Identity];
-        qname='update "Asset" set "AssetName"=$2, "CoverContentUUID"=$3, "ModifiedAt"=$4, "Description"=$5, "ReservePrice"=$6, "Content"=$7, "Identity"=$8  where "AssetUUID"=$1' 
+
+    var qarg=[AssetUUID,AssetName,CoverContentUUID,Description,ModifiedAt,ReservePrice];
+        qname='update "Asset" set "AssetName"=$2, "CoverContentUUID"=$3, "ModifiedAt"=$4, "Description"=$5, "ReservePrice"=$6  where "AssetUUID"=$1' 
     try{
         result =await pgsql.conquery(qname,qarg)
         console.log(result.rowCount)
@@ -64,7 +63,7 @@ exports.updateAsset = async (req) => {
 exports.deleteAsset = async (req) => {
     var AssetUUID = req.body.AssetUUID;
     var qarg=[AssetUUID]
-    qname='delete from "Asset" where "UserUUID"= $1' 
+    qname='delete from "Asset" where "AssetUUID"= $1' 
     try{
         result =await pgsql.conquery(qname,qarg)
         if (result.rowCount == 1)
