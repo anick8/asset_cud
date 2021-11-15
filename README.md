@@ -18,38 +18,46 @@ git push hashx
 
 # Routes
 
-## /createPassword
+## /createAsset
 
-Creates a new Password 	 : 
+Creates a new Asset :
+
 Request Body - 
- - req.body.UserUUID : UUID of creating account from UserInfo
- - req.body.SaltedHash  : Secure salted hash of password
+ - req.body.IdentityUUID : UUID of Identity from Identity 
+ - req.body.AssetName  : Name of Asset
+ - req.body.CoverContentUUID : UUID of CoverContent from Content
+ - req.body.Description : Description of Created Asset
+ - req.body.ReservePrice : Price set for the Created Asset
  
  *Optional Arguments 
  
 Query : 
--'Insert into "Password" ("UserUUID","SaltedHash","ModifiedAt","LastUsed") values($1,$2,$3,$4)' 
+-'Insert into "Asset" ("AssetUUID","IdentityUUID","AssetName","CoverContentUUID","CreatedAt","Description","ModifiedAt","ReservePrice") values($1,$2,$3,$4,$5,$6,$7,$8)'
 
 ## /updatePassword
 
 Updates  Password with new details : 
 
 Request Body - 
-- req.body.UserUUID : UUID of creating account from UserInfo
-- req.body.SaltedHash  : Secure salted hash of password
+- req.body.AssetName  : Name of Asset
+- req.body.AssetUUID : Unqiue UUID of Asset
+- req.body.CoverContentUUID : UUID of CoverContent from Content
+- req.body.Description : Description of Created Asset
+- req.body.ReservePrice : Price set for the Created Asset
+
  
  
 Query : 
-- qname='update "Password" set "SaltedHash"=$2,"ModifiedAt"=$3  where "UserUUID"=$1' 
+- qname='update "Asset" set "AssetName"=$2, "CoverContentUUID"=$3, "ModifiedAt"=$4, "Description"=$5, "ReservePrice"=$6  where "AssetUUID"=$1'  
 
 ## /deletePassword
 
 Deletes Password row : 
 Request Body - 
- - req.body.UserUUID : UserUUID of profile 
+ - req.body.AssetUUID : Unique UUID of Asset
  
 Query : 
-- 'delete from "Password" where "UserUUID"= $1' 
+- 'delete from "Asset" where "AssetUUID"=$1'
 
 
 
