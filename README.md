@@ -1,5 +1,5 @@
-# Hashx Password CUD Microservice
-Microservice to implement Password Create Update and Delete operations.
+# Hashx Asset CUD Microservice
+Microservice to implement Asset Create Update and Delete operations.
 
 Run using -
 
@@ -34,9 +34,9 @@ Request Body -
 Query : 
 -'Insert into "Asset" ("AssetUUID","IdentityUUID","AssetName","CoverContentUUID","CreatedAt","Description","ModifiedAt","ReservePrice") values($1,$2,$3,$4,$5,$6,$7,$8)'
 
-## /updatePassword
+## /updateAsset
 
-Updates  Password with new details : 
+Updates  Asset with new details : 
 
 Request Body - 
 - req.body.AssetName  : Name of Asset
@@ -50,9 +50,9 @@ Request Body -
 Query : 
 - qname='update "Asset" set "AssetName"=$2, "CoverContentUUID"=$3, "ModifiedAt"=$4, "Description"=$5, "ReservePrice"=$6  where "AssetUUID"=$1'  
 
-## /deletePassword
+## /deleteAsset
 
-Deletes Password row : 
+Deletes Asset row : 
 Request Body - 
  - req.body.AssetUUID : Unique UUID of Asset
  
