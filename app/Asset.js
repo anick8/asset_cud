@@ -10,12 +10,14 @@ exports.createAsset = async (req) => {
         var AssetUUID = hash.hashing(AssetName,CreatedAt);
         var Description = req.body.Description|| "";
         var ReservePrice = req.body.ReservePrice|| 0;
+        var isPublic = req.body.isPublic|| true;
+        var BatchID =   req.body.BatchID || 0;
         // var Content = req.body.Content;
         // var Identity = req.body.Identity;
 
-        var qarg=[AssetUUID,IdentityUUID,AssetName,CoverContentUUID,CreatedAt,Description,ModifiedAt,ReservePrice];
+        var qarg=[AssetUUID,IdentityUUID,AssetName,CoverContentUUID,CreatedAt,Description,ModifiedAt,ReservePrice,isPublic,BatchID];
         
-        qname='Insert into "Asset" ("AssetUUID","IdentityUUID","AssetName","CoverContentUUID","CreatedAt","Description","ModifiedAt","ReservePrice") values($1,$2,$3,$4,$5,$6,$7,$8)' 
+        qname='Insert into "Asset" ("AssetUUID","IdentityUUID","AssetName","CoverContentUUID","CreatedAt","Description","ModifiedAt","ReservePrice","isPublic","BatchID") values($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)' 
         try{
             result =await pgsql.conquery(qname,qarg)
             console.log(result.rowCount)
@@ -37,9 +39,10 @@ exports.updateAsset = async (req) => {
     var ModifiedAt = Date.now();
     var Description = req.body.Description;
     var ReservePrice = req.body.ReservePrice;
-
+    var isPublic = req.body.isPublic|| true;
+    var BatchID =   req.body.BatchID || 0;
     var qarg=[AssetUUID,AssetName,CoverContentUUID,Description,ModifiedAt,ReservePrice];
-        qname='update "Asset" set "AssetName"=$2, "CoverContentUUID"=$3, "ModifiedAt"=$4, "Description"=$5, "ReservePrice"=$6  where "AssetUUID"=$1' 
+        qname='update "Asset" set "AssetName"=$2, "CoverContentUUID"=$3, "ModifiedAt"=$4, "Description"=$5, "ReservePrice"=$6 , "isPublic"=$7, "BatchID"=$8 where "AssetUUID" = $1'
     try{
         result =await pgsql.conquery(qname,qarg)
         console.log(result.rowCount)

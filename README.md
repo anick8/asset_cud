@@ -28,11 +28,15 @@ Request Body -
  - req.body.CoverContentUUID : UUID of CoverContent from Content
  - req.body.Description : Description of Created Asset
  - req.body.ReservePrice : Price set for the Created Asset
- 
- *Optional Arguments 
- 
+ - req.body.BatchID : Batch number of asset
+ - req.body.isPublic : Is public or not, default 1 ( Public )
+
+Response Body -
+
+res.data = {AssetUUID} 
+
 Query : 
--'Insert into "Asset" ("AssetUUID","IdentityUUID","AssetName","CoverContentUUID","CreatedAt","Description","ModifiedAt","ReservePrice") values($1,$2,$3,$4,$5,$6,$7,$8)'
+    'Insert into "Asset" ("AssetUUID","IdentityUUID","AssetName","CoverContentUUID","CreatedAt","Description","ModifiedAt","ReservePrice","isPublic","BatchID")
 
 ## /updateAsset
 
@@ -44,11 +48,17 @@ Request Body -
 - req.body.CoverContentUUID : UUID of CoverContent from Content
 - req.body.Description : Description of Created Asset
 - req.body.ReservePrice : Price set for the Created Asset
+ - req.body.BatchID : Batch number of asset
+ - req.body.isPublic : Is public or not, default 1 ( Public )
 
  
+Response Body -
+
+res.data = {AssetUUID} 
+
  
 Query : 
-- qname='update "Asset" set "AssetName"=$2, "CoverContentUUID"=$3, "ModifiedAt"=$4, "Description"=$5, "ReservePrice"=$6  where "AssetUUID"=$1'  
+'update "Asset" set "AssetName"=$2, "CoverContentUUID"=$3, "ModifiedAt"=$4, "Description"=$5, "ReservePrice"=$6 , "isPublic"=$7, "BatchID"=$8 where "AssetUUID" = $1'
 
 ## /deleteAsset
 
@@ -56,6 +66,12 @@ Deletes Asset row :
 Request Body - 
  - req.body.AssetUUID : Unique UUID of Asset
  
+
+Response Body -
+
+res.data = {AssetUUID} 
+
+
 Query : 
 - 'delete from "Asset" where "AssetUUID"=$1'
 
