@@ -10,7 +10,7 @@ exports.createAsset = async (req) => {
         var AssetUUID = hash.hashing(AssetName,CreatedAt);
         var Description = req.body.Description|| "";
         var ReservePrice = req.body.ReservePrice|| 0;
-        var isPublic = req.body.isPublic|| true;
+        var isPublic = req.body.isPublic|| 1;
         var BatchID =   req.body.BatchID || 0;
         // var Content = req.body.Content;
         // var Identity = req.body.Identity;
