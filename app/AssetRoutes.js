@@ -9,8 +9,13 @@ module.exports = (app, console) => {
          utils.handleresult(res,result)
         }
     )
-    app.post('/updateAsset',async (req, res) => {
-        result  = await Asset.updateAsset(req);
+    app.post('/updateAssetDetails',async (req, res) => {
+        result  = await Asset.updateAssetDetails(req);
+        utils.handleresult(res,result)
+       }
+    )
+    app.post('/updateAssetReserve',async (req, res) => {
+        result  = await Asset.updateAssetReserve(req);
         utils.handleresult(res,result)
        }
     )

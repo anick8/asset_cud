@@ -32,23 +32,22 @@ exports.createAsset = async (req) => {
 
 };
 
-exports.updateAsset = async (req) => {
+exports.updateAssetDetails = async (req) => {
     var AssetUUID = req.body.AssetUUID;
     var AssetName = req.body.AssetName;
     var CoverContentUUID = req.body.CoverContentUUID;
     var ModifiedAt = Date.now();
     var Description = req.body.Description;
-    var ReservePrice = req.body.ReservePrice;
     var isPublic = req.body.isPublic|| true;
     var BatchID =   req.body.BatchID || 0;
-    var qarg=[AssetUUID,AssetName,CoverContentUUID,Description,ModifiedAt,ReservePrice];
-        qname='update "Asset" set "AssetName"=$2, "CoverContentUUID"=$3, "ModifiedAt"=$4, "Description"=$5, "ReservePrice"=$6 , "isPublic"=$7, "BatchID"=$8 where "AssetUUID" = $1'
+    var qarg=[AssetUUID,AssetName,CoverContentUUID,Description,ModifiedAt,isPublic,BatchID];
+        qname='update "Asset" set "AssetName"=$2,"CoverContentUUID"=$3,"Description"=$4,"ModifiedAt"=$5,"isPublic"=$6,"BatchID"=$7 where "AssetUUID" = $1'
     try{
         result =await pgsql.conquery(qname,qarg)
         console.log(result.rowCount)
         if (result.rowCount == 1)
         {
-            data ={"AssetUUID":AssetUUID}
+            data ={"ModifiedAt":ModifiedAt}
             return [null,data,"Successfully updated Asset"]
         }
         else if(result.rowCount == 0){
@@ -62,6 +61,34 @@ exports.updateAsset = async (req) => {
     }
 
 };
+
+
+exports.updateAssetReserve = async (req) => {
+    var AssetUUID = req.body.AssetUUID;
+    var ModifiedAt = Date.now();
+    var ReservePrice = req.body.ReservePrice;
+    var qarg=[AssetUUID,AssetName,CoverContentUUID,Description,ModifiedAt,ReservePrice];
+        qname='update "Asset" set "ReservePrice"=$6 where "AssetUUID" = $1'
+    try{
+        result =await pgsql.conquery(qname,qarg)
+        console.log(result.rowCount)
+        if (result.rowCount == 1)
+        {
+            data ={"ModifiedAt":ModifiedAt}
+            return [null,data,"Successfully updated Asset"]
+        }
+        else if(result.rowCount == 0){
+            err ={"err":"AssetUUID does not exist"}
+            return [err,null,"AssetUUID does not exist"]
+        }
+    }
+    catch(err)
+    {
+        return [err,null,"Error updating Asset to the database :"+err.detail]
+    }
+
+};
+
 
 exports.deleteAsset = async (req) => {
     var AssetUUID = req.body.AssetUUID;
