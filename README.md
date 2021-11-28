@@ -54,11 +54,38 @@ Request Body -
  
 Response Body -
 
-res.data = {AssetUUID} 
+res.data = {ModifiedAt} 
 
  
 Query : 
-'update "Asset" set "AssetName"=$2, "CoverContentUUID"=$3, "ModifiedAt"=$4, "Description"=$5, "ReservePrice"=$6 , "isPublic"=$7, "BatchID"=$8 where "AssetUUID" = $1'
+'update "Asset" set "AssetName"=$2,"CoverContentUUID"=$3,"Description"=$4,"ModifiedAt"=$5,"isPublic"=$6,"BatchID"=$7 where "AssetUUID" = $1'
+
+
+## /updateAssetReserve
+
+Updates  Asset reserve price
+
+Request Body - 
+- req.body.AssetName  : Name of Asset
+- req.body.AssetUUID : Unqiue UUID of Asset
+- req.body.CoverContentUUID : UUID of CoverContent from Content
+- req.body.Description : Description of Created Asset
+- req.body.ReservePrice : Price set for the Created Asset
+ - req.body.BatchID : Batch number of asset
+ - req.body.isPublic : Is public or not, default 1 ( Public )
+
+ 
+Response Body -
+
+res.data = {ModifiedAt} 
+
+ 
+Query : 
+'update "Asset" set "ModifiedAt"=$2,"ReservePrice"=$3 where "AssetUUID" = $1'
+
+
+
+
 
 ## /deleteAsset
 
