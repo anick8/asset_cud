@@ -38,7 +38,7 @@ res.data = {AssetUUID}
 Query : 
     'Insert into "Asset" ("AssetUUID","IdentityUUID","AssetName","CoverContentUUID","CreatedAt","Description","ModifiedAt","ReservePrice","isPublic","BatchID")
 
-## /updateAsset
+## /updateAssetDetails
 
 Updates  Asset with new details : 
 

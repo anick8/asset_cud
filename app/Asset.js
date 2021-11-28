@@ -51,8 +51,8 @@ exports.updateAssetDetails = async (req) => {
             return [null,data,"Successfully updated Asset"]
         }
         else if(result.rowCount == 0){
-            err ={"err":"AssetUUID does not exist"}
-            return [err,null,"AssetUUID does not exist"]
+            data ={"err":"AssetUUID does not exist"}
+            return [null,data,"AssetUUID does not exist"]
         }
     }
     catch(err)
@@ -67,8 +67,8 @@ exports.updateAssetReserve = async (req) => {
     var AssetUUID = req.body.AssetUUID;
     var ModifiedAt = Date.now();
     var ReservePrice = req.body.ReservePrice;
-    var qarg=[AssetUUID,AssetName,CoverContentUUID,Description,ModifiedAt,ReservePrice];
-        qname='update "Asset" set "ReservePrice"=$6 where "AssetUUID" = $1'
+    var qarg=[AssetUUID,ModifiedAt,ReservePrice];
+    qname='update "Asset" set "ModifiedAt"=$2,"ReservePrice"=$3 where "AssetUUID" = $1'
     try{
         result =await pgsql.conquery(qname,qarg)
         console.log(result.rowCount)
@@ -78,8 +78,8 @@ exports.updateAssetReserve = async (req) => {
             return [null,data,"Successfully updated Asset"]
         }
         else if(result.rowCount == 0){
-            err ={"err":"AssetUUID does not exist"}
-            return [err,null,"AssetUUID does not exist"]
+            data ={"err":"AssetUUID does not exist"}
+            return [null,data,"AssetUUID does not exist"]
         }
     }
     catch(err)
@@ -103,8 +103,8 @@ exports.deleteAsset = async (req) => {
         }   
         else if(result.rowCount == 0)
         {
-            err={'err':'Row does not exist'}
-            return [err,null,"Asset for the AssetUUID does not exist"]
+            data={'err':'Row does not exist'}
+            return [null,data,"Asset for the AssetUUID does not exist"]
         }
     }
     catch(err)
