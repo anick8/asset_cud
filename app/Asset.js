@@ -38,7 +38,7 @@ exports.updateAssetDetails = async (req) => {
     var CoverContentUUID = req.body.CoverContentUUID;
     var ModifiedAt = Date.now();
     var Description = req.body.Description;
-    var isPublic = req.body.isPublic|| true;
+    var isPublic = req.body.isPublic|| 1;
     var BatchID =   req.body.BatchID || 0;
     var qarg=[AssetUUID,AssetName,CoverContentUUID,Description,ModifiedAt,isPublic,BatchID];
         qname='update "Asset" set "AssetName"=$2,"CoverContentUUID"=$3,"Description"=$4,"ModifiedAt"=$5,"isPublic"=$6,"BatchID"=$7 where "AssetUUID" = $1'
