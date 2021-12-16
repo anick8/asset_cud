@@ -1,0 +1,49 @@
+[{
+	"Route":"http://localhost:8080/createAssetTransaction",
+	"data":[{"IdentityUUID":"eaf5fe0c8509343d5efa7d2cff8d2eea7e3a5d40408c1a01c9819c3a0f2959e2",
+		"AssetName":"Painting Golix Transaction",
+		"CoverContentUUID":"9c22c2130570e8f73dffb76838b6b237ba0ae0dff971d8dc481f92795df1ec40",
+		"Description":"My second asset Transaction",
+		"ReservePrice":100,
+		"isPublic":0,
+		"BatchID":123,
+		"WalletUUID":"07ab01042b45d0841571fc3ed403e4544442a4ae0d7c09f8b40c0de93c279c49",
+		"Note":"Hello",
+		"ToUsername":"ToUsername",
+		"TransactionStatus":1,
+		"TransactionType":1
+	
+	
+	}]
+				
+},
+{
+	"Route":"http://localhost:8080/updateAssetTransaction",
+	"data":[{"AssetUUID":"ace532384fda744cf621e23bda60bf6442ee0e77221154fc62a9ea4ae32d9a84",
+		"ReservePrice":200,
+		"WalletUUID":"07ab01042b45d0841571fc3ed403e4544442a4ae0d7c09f8b40c0de93c279c49",
+		"ToUsername":"ToUsername",
+		"Note":"test transact",
+		"TransactionStatus":1,
+		"TransactionType":1
+	
+	
+	}]
+				
+},
+{
+	"Route":"http://localhost:8080/deleteAssetTransaction",
+	"data":[{"AssetUUID":"94b6ab4e637e3df72f98945f1f87b2156101e065bf26963c7d2b31856e8a51d8",
+		"WalletUUID":"07ab01042b45d0841571fc3ed403e4544442a4ae0d7c09f8b40c0de93c279c49",
+		"ToUsername":"ToUsername",
+		"Note":"test transact",
+		"TransactionStatus":1,
+		"TransactionType":1
+	
+	
+	}]
+				
+}
+
+]
+

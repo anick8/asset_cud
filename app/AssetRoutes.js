@@ -4,9 +4,10 @@ var Asset = require('./Asset');
 module.exports = (app, console) => {
 //    var utils = require('../common/utils');
 
-    app.post('/createAsset',async (req, res) => {
-         result  = await Asset.createAsset(req);
-         utils.handleresult(res,result)
+    app.post('/createAssetTransaction',async (req, res) => {
+         result  = await Asset.createAssetTransaction(req);
+         console.log(result)
+         utils.handleresultdict(res,result)
         }
     )
     app.post('/updateAssetDetails',async (req, res) => {
@@ -14,14 +15,14 @@ module.exports = (app, console) => {
         utils.handleresult(res,result)
        }
     )
-    app.post('/updateAssetReserve',async (req, res) => {
-        result  = await Asset.updateAssetReserve(req);
-        utils.handleresult(res,result)
+    app.post('/updateAssetTransaction',async (req, res) => {
+        result  = await Asset.updateAssetTransaction(req);
+        utils.handleresultdict(res,result)
        }
     )
-    app.post('/deleteAsset',async (req, res) => {
-        result  = await Asset.deleteAsset(req);
-        utils.handleresult(res,result)
+    app.post('/deleteAssetTransaction',async (req, res) => {
+        result  = await Asset.deleteAssetTransaction(req);
+        utils.handleresultdict(res,result)
         }
     )
 

@@ -55,3 +55,9 @@ exports.handleresult = async (res,result) => {
         res.status(200).send({"err":null,"data":result[1],"msg":result[2]})
  
 }
+exports.handleresultdict = async (res,result) => {
+    if(result.err)
+        res.status(400).send({"err":result.err,"data":null,"msg":result.msg})
+    else
+        res.status(200).send({"err":null,"data":result.data,"msg":result.msg})
+}

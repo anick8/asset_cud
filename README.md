@@ -1,3 +1,4 @@
+﻿
 # Hashx Asset CUD Microservice
 Microservice to implement Asset Create Update and Delete operations.
 
@@ -18,7 +19,7 @@ git push hashx
 
 # Routes
 
-## /createAsset
+## /createAssetTransaction
 
 Creates a new Asset :
 
@@ -29,51 +30,51 @@ Request Body -
  - req.body.Description : Description of Created Asset
  - req.body.ReservePrice : Price set for the Created Asset
  - req.body.BatchID : Batch number of asset
- - req.body.isPublic : Is public or not, default 1 ( Public )
-
+ - req.body.isPublic : Is public or not, default 1 ( Public
+ - req.body.Note : Transaction Note
+ - req.body.WalletUUID : WalletUUID of the Wallet
+  
 Response Body -
 
-res.data = {AssetUUID} 
+res.data ={ReservePrice,TransactionUUID,AssetUUID} 
 
 Query : 
-    'Insert into "Asset" ("AssetUUID","IdentityUUID","AssetName","CoverContentUUID","CreatedAt","Description","ModifiedAt","ReservePrice","isPublic","BatchID")
+'Insert into "Asset" ("AssetUUID","IdentityUUID","AssetName","CoverContentUUID","CreatedAt","Description","ModifiedAt","ReservePrice","isPublic","BatchID") 
+
+## /updateAssetTransaction
+
+Updates  Asset with new Reserve Price : 
+
+Request Body - 
+- req.body.AssetUUID : Unqiue UUID of Asset
+- req.body.ReservePrice : New Reserve Price
+- req.body.Note : Transaction Note
+- req.body.WalletUUID : WalletUUID of the Wallet
+- req.body.ToUsername : Username of the Wallet
+
+
+ 
+Response Body -
+
+res.data = {ReservePrice,TransactionUUID,AssetUUID} 
+
+ 
+Query : 
+'update "Asset" set "ModifiedAt"=$2,"ReservePrice"=$3 where "AssetUUID" = $1'
+
 
 ## /updateAssetDetails
 
-Updates  Asset with new details : 
-
+Updates  Asset metaData  
+AssetUUID,Note,ToUsername,TransactionStatus,TransactionType,WalletUUID
 Request Body - 
-- req.body.AssetName  : Name of Asset
 - req.body.AssetUUID : Unqiue UUID of Asset
+- req.body.AssetName : Unique Name of Asset
 - req.body.CoverContentUUID : UUID of CoverContent from Content
 - req.body.Description : Description of Created Asset
-- req.body.ReservePrice : Price set for the Created Asset
- - req.body.BatchID : Batch number of asset
- - req.body.isPublic : Is public or not, default 1 ( Public )
-
- 
-Response Body -
-
-res.data = {ModifiedAt} 
-
- 
-Query : 
-'update "Asset" set "AssetName"=$2,"CoverContentUUID"=$3,"Description"=$4,"ModifiedAt"=$5,"isPublic"=$6,"BatchID"=$7 where "AssetUUID" = $1'
-
-
-## /updateAssetReserve
-
-Updates  Asset reserve price
-
-Request Body - 
-- req.body.AssetName  : Name of Asset
-- req.body.AssetUUID : Unqiue UUID of Asset
-- req.body.CoverContentUUID : UUID of CoverContent from Content
-- req.body.Description : Description of Created Asset
-- req.body.ReservePrice : Price set for the Created Asset
- - req.body.BatchID : Batch number of asset
- - req.body.isPublic : Is public or not, default 1 ( Public )
-
+- req.body.BatchID : Batch number of asset
+- req.body.isPublic : Is public or not, default 1 ( Public )
+	
  
 Response Body -
 
@@ -87,16 +88,19 @@ Query :
 
 
 
-## /deleteAsset
+## /deleteAssetTransaction
 
 Deletes Asset row : 
 Request Body - 
- - req.body.AssetUUID : Unique UUID of Asset
+- req.body.AssetUUID : Unqiue UUID of Asset
+- req.body.Note : Transaction Note
+- req.body.WalletUUID : WalletUUID of the Wallet
+- req.body.ToUsername : Username of the Wallet
  
 
 Response Body -
 
-res.data = {AssetUUID} 
+res.data = {ReservePrice,TransactionUUID,AssetUUID} 
 
 
 Query : 
