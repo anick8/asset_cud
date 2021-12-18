@@ -11,9 +11,8 @@
 		"Note":"Hello",
 		"ToUsername":"ToUsername",
 		"TransactionStatus":1,
-		"TransactionType":1
-	
-	
+		"TransactionType":1,
+		"Quantity":3
 	}]
 				
 },

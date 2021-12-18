@@ -1,11 +1,13 @@
 var pgsql = require('../lib/pgsql')
-var hash = require('../lib/hash')
+var hash = require('../lib/hash');
+const { range } = require('express/lib/request');
 
 exports.createAssetTransaction = async (req) => {
     try{
 
         var Timestamp = Date.now()  
-        var {Note,TransactionStatus,TransactionType,WalletUUID} =req.body;
+        var {Note,WalletUUID} =req.body;
+        var TransactionStatus = req.body.TransactionStatus || 1;
         var ToWalletUUID = '7b55fc91931f992fe86b4e4bd27dd33b778e1002146d9f2179ac5c40b9a31321'; //Escrow default wallet
         var ToWalletType = 1;
         var TransactionType = 1;
@@ -17,32 +19,63 @@ exports.createAssetTransaction = async (req) => {
         var ReservePrice = req.body.ReservePrice|| 0;
         var isPublic = req.body.isPublic|| 1;
         var BatchID =   req.body.BatchID || 0;
+        var type = 0
+        var From = req.body.From || Timestamp ;
+        var Till = req.body.Till ||  2147483647000;  
+        var N = req.body.Quantity || 1; 
         console.log(WalletUUID,Timestamp,ReservePrice)
-
+        var AssetListResult =[]
         var TransactionUUID =hash.hashing([WalletUUID,Timestamp])
         var AssetUUID = hash.hashing([AssetName,Timestamp]);
-        const queries = [
-           {
-                'qname':'DebitfromWallet',
-                'query':'update "Wallet" set "Balance" = "Balance"-$1 where "WalletUUID" = $2;',
-                'qarg':[ReservePrice,WalletUUID]
-            },
-            {
-                'qname':'CredittoWallet',
-                'query':'update "Wallet" set "Balance" = "Balance"+$1 where "WalletUUID" = $2;',
-                'qarg':[ReservePrice,ToWalletUUID]
-            },
-            {
-                'qname':'createTransaction',
-                'query':'insert into "WalletHistory" ("Amount","FromWalletUUID","ToWalletUUID","TransactionUUID","ToWalletType","Timestamp","Note","ToUsername","TransactionStatus","TransactionType") values($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)',
-                'qarg':[ReservePrice,WalletUUID,ToWalletUUID,TransactionUUID,ToWalletType,Timestamp,Note,ToUsername,TransactionStatus,TransactionType]
-            },
-            {
+        
+        var DebQuery = {
+            'qname':'DebitfromWallet',
+            'query':'update "Wallet" set "Balance" = "Balance"-$1 where "WalletUUID" = $2;',
+            'qarg':[ReservePrice*N,WalletUUID]
+        }
+        var CredQuery = 
+
+        {
+            'qname':'CredittoWallet',
+            'query':'update "Wallet" set "Balance" = "Balance"+$1 where "WalletUUID" = $2;',
+            'qarg':[ReservePrice*N,ToWalletUUID]
+        }
+
+        var CreateTrans = 
+        {
+            'qname':'createTransaction',
+            'query':'insert into "WalletHistory" ("Amount","FromWalletUUID","ToWalletUUID","TransactionUUID","ToWalletType","Timestamp","Note","ToUsername","TransactionStatus","TransactionType") values($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)',
+            'qarg':[ReservePrice*N,WalletUUID,ToWalletUUID,TransactionUUID,ToWalletType,Timestamp,Note,ToUsername,TransactionStatus,TransactionType]
+        }
+
+  
+        
+
+        var queries = [DebQuery,CredQuery,CreateTrans] 
+        console.log(queries[0],queries[1],queries[2])
+        for (i =0;i<N;i++)
+        {   
+            var AssetUUID = hash.hashing([AssetName,Timestamp,i])
+            AssetListResult.push(AssetUUID)
+            var Assetname=`${AssetName} (${i}/${N})`
+            var  CreateQuery = {
                 'qname':'CreateAsset',
                 'query':'Insert into "Asset" ("AssetUUID","IdentityUUID","AssetName","CoverContentUUID","CreatedAt","Description","ModifiedAt","ReservePrice","isPublic","BatchID") values($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)',
-                'qarg':[AssetUUID,IdentityUUID,AssetName,CoverContentUUID,Timestamp,Description,Timestamp,ReservePrice,isPublic,BatchID]
+                'qarg':[AssetUUID,IdentityUUID,Assetname,CoverContentUUID,Timestamp,Description,Timestamp,ReservePrice,isPublic,BatchID]
             }
-        ]
+            var CreateAvail = {
+                'qname':'CreateAssetAvailabilty',
+                'query':'insert into "Availability" ("ID","type","CreatedAt","ModifiedAt","From","Till") values ($1,$2,$3,$4,$5,$6)',
+                'qarg':[AssetUUID,type,Timestamp,Timestamp,From,Till]
+            }
+            console.log(CreateAvail,CreateQuery)
+
+            queries=queries.concat(CreateQuery)
+            queries=queries.concat(CreateAvail)
+            
+        }
+
+        console.log(queries)
 
         
         result = await pgsql.executetransaction(queries)
@@ -50,7 +83,7 @@ exports.createAssetTransaction = async (req) => {
         if (('command' in result)){
             if(result.command =='COMMIT')
             {
-                data ={'ReservePrice':ReservePrice,"TransactionUUID":TransactionUUID,'AssetUUID':AssetUUID}
+                data ={'ReservePrice':ReservePrice,"TransactionUUID":TransactionUUID,'AssetUUID':AssetListResult}
                 return {'err':null,'data':data,'msg':'Transaction executed'}
             }
         }
@@ -65,8 +98,6 @@ exports.createAssetTransaction = async (req) => {
     }
 
 }
-
-
 
 var getAsset = async(req) => {
     try{
@@ -99,13 +130,14 @@ exports.updateAssetTransaction = async (req) => {
     try{
 
         var Timestamp = Date.now()  
-        var {AssetUUID,Note,ToUsername,TransactionStatus,TransactionType,WalletUUID} =req.body;
+        var {AssetUUID,Note,ToUsername,WalletUUID} =req.body;
         
         var EscrowWalletUUID = '7b55fc91931f992fe86b4e4bd27dd33b778e1002146d9f2179ac5c40b9a31321'; //Escrow default wallet
         var ToWalletType = 1;  //Escrow Wallet
         var ReservePrice = req.body.ReservePrice|| 0;
         var TransactionUUID =hash.hashing([WalletUUID,Timestamp,ReservePrice])
-
+        var TransactionStatus = 1;
+        var TransactionType = 1;
         var GARes = await getAsset(req.body)
         if(GARes.data===null || GARes.data.err)
             return GARes    //Return error if failed and halt transaction
@@ -207,8 +239,9 @@ exports.deleteAssetTransaction = async (req) => {
     try{
 
         var Timestamp = Date.now()  
-        var {AssetUUID,Note,ToUsername,TransactionStatus,TransactionType,WalletUUID} =req.body;
-        
+        var {AssetUUID,Note,ToUsername,WalletUUID} =req.body;
+        var TransactionType = req.body.TransactionType || 2;
+        var TransactionStatus = req.body.TransactionStatus || 2;
         var ToWalletUUID = '7b55fc91931f992fe86b4e4bd27dd33b778e1002146d9f2179ac5c40b9a31321'; //Escrow default wallet
         var ToWalletType = 2;  //Escrow Wallet
         var TransactionUUID =hash.hashing([WalletUUID,Timestamp])
@@ -237,6 +270,11 @@ exports.deleteAssetTransaction = async (req) => {
             {
                 'qname':'deleteAsset',
                 'query':'delete from "Asset" where "AssetUUID"= $1',
+                'qarg':[AssetUUID]
+            },
+            {
+                'qname':'deleteAssetAvailabilty',
+                'query':'delete from "Availability" where "ID"= $1',
                 'qarg':[AssetUUID]
             }
         ]
